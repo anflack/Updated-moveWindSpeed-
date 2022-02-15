@@ -192,18 +192,21 @@ setMethod("getWindEstimates", signature = signature(data = "list", timestamps =
           {
             n<-length(data)
             windEst <- mclapply(lapply(data,function(x) cbind(as.numeric(x[,1]),as.numeric(x[,2]))), getWindEstimate, phi = phi)
+            
             res <- data.frame(matrix(NA, ncol = length(columnNamesWind), nrow = n))
+            
             names(res) <- columnNamesWind
+            
             estimationSuccessful <- !unlist(lapply(windEst, is.null))
             
             ### NEW
             vz <- lapply(data[estimationSuccessful], function(x) as.numeric(x[,3]))
             t <- lapply(data[estimationSuccessful], function(x) as.POSIXct(x[,4],format="%Y-%m-%d %H:%M:%S",tz="UTC"))
-            data <- lapply(data[estimationSuccessful], function(x) cbind(as.numeric(x[,1]),as.numeric(x[,2])))
+            data <- lapply(data, function(x) cbind(as.numeric(x[,1]),as.numeric(x[,2])))
             ### 
             airVectors <-
               mapply('-',
-                     lapply(data, t),
+                     lapply(data[estimationSuccessful], t),
                      lapply(windEst[estimationSuccessful], '[[', 'windEst'),
                      SIMPLIFY =
                        F)  
@@ -216,6 +219,7 @@ setMethod("getWindEstimates", signature = signature(data = "list", timestamps =
                                   sqrt(colSums(x ^ 2))
                                 })
           ## calculate thermal features
+            
             therm<-
               mcmapply(
                 headings = airHeadings,
