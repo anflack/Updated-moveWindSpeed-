@@ -1,0 +1,56 @@
+thermallingFeaturesFunction = function(headings,speeds, time,vertical_speed)
+{ 
+  # gravitational acceleration
+  g = 9.81; 
+  # noninduced drag coefficient
+  nonind_drag_coef = 0.033;
+  # induced drag factor
+  K = 0.81;
+  # wing aspect ratio
+  Ar = 7.21;
+  ## mass
+  m = 3.63
+  ## air density
+  air_d = 1.15
+  ## wing area
+  S = 0.57
+  
+  ## change in heading
+  diffHeading = diff(headings)
+  diffHeading <- ((diffHeading + 180) %% 360) - 180
+  #max(abs(cumsum(diffHeading))) >= totalAngle
+  ## mean angular rate in radians
+  rot_angle <- max(abs(cumsum(diffHeading)))/max(cumsum(as.numeric(diff(time,units="secs"))))
+  ## circling radius
+  rot_radius <- mean(speeds)/(rot_angle*pi/180)
+  ## time per full circle
+  t_circle = 2*pi/(rot_angle*pi/180)
+  ## banking angle
+  bank_angle <- atan(mean(speeds)*(rot_angle*pi/180)/g)*180/pi
+  ## lift acceleration
+  lift_acc <- sqrt(g^2+mean(speeds)^2*(rot_angle*pi/180)^2)
+  ## Lift
+  lift = (g/cos(bank_angle*pi/180)*m)         
+  ## lift coefficient
+  lift_coef = (lift*(2/(air_d*mean(speeds)^2*S)))
+  ## induced drag coefficient
+  ind_drag_coef =  (K * lift_coef^2) / (pi*Ar)
+  ## drag coefficient
+  drag_coef = ind_drag_coef + nonind_drag_coef;
+  ## total drag
+  total_drag = drag_coef * ((air_d*mean(speeds)^2*S)/2)       
+  ## kinetic energy
+  E_kin = total_drag * mean(speeds)
+  ## sink rate
+  sink_rate = E_kin / (m * g)
+  ## thermal strength  
+  thermal_strength = mean(vertical_speed) - sink_rate
+  r=data.frame("sink_rate" = sink_rate,
+               "air_speed" = mean(speeds),
+               "vert_speed" = mean(vertical_speed),
+               "therm" = thermal_strength,
+               "bank" = bank_angle,
+               "circ_radius" = rot_radius,
+               "circ_time" = t_circle)
+  return(r)
+}
