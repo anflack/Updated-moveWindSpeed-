@@ -1,0 +1,14 @@
+source('~/R/getTrackSegments_updated.R', echo=TRUE)
+source('~/R/thermallingFeaturesFunction.R')
+source('~/R/getWindEstimates_update.R', echo=TRUE)
+
+
+data = storks
+storksSub <-
+  storks[strftime(timestamps(storks), format = "%H%M", tz="UTC") %in% c("1303", "1304"), ]
+#storksWind <- getWindEstimates(storksSub)
+#storksWind <- spTransform(storksWind, center = T)
+indiv1 <- storksSub[[1]]
+data = indiv1
+
+storksWind <- getWindEstimates(storksSub)
