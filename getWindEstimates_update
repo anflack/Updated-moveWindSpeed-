@@ -143,7 +143,7 @@ setMethod("getWindEstimates", signature = signature(data = "data.frame", timesta
                 windowSize = windowSize,
                 isFocalPoint = isFocalPoint,
                 isSamplingRegular = isSamplingRegular, 
-                focalSampleBefore=focalSampleBefore, timestamps=timestamps
+                focalSampleBefore=focalSampleBefore, timestamps=data$t
               )
 
             data = segList
