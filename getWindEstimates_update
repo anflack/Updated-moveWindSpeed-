@@ -203,7 +203,7 @@ setMethod("getWindEstimates", signature = signature(data = "list", timestamps =
             ### 
             airVectors <-
               mapply('-',
-                     lapply(data[estimationSuccessful], t),
+                     lapply(data, t),
                      lapply(windEst[estimationSuccessful], '[[', 'windEst'),
                      SIMPLIFY =
                        F)  
