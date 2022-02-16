@@ -219,8 +219,8 @@ setMethod("getWindEstimates", signature = signature(data = "list", timestamps =
                                   sqrt(colSums(x ^ 2))
                                 })
           ## calculate thermal features
-            
-            therm<-
+            therm =  vector(mode='list', length=n)
+            therm[estimationSuccessful]<-
               mcmapply(
                 headings = airHeadings,
                 speeds = airSpeeds,
