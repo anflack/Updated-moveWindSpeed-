@@ -249,7 +249,7 @@ setMethod("getWindEstimates", signature = signature(data = "list", timestamps =
               )), ncol = 3, byrow = T)
             ## changed here to have thermal features in output file
             res[estimationSuccessful, columnNamesWind[11:17]] <-
-              matrix(rbindlist(therm[estimationSuccessful]), ncol = 7, byrow = T)
+              matrix(unlist(therm[estimationSuccessful]), ncol = 7, byrow = T)
             covarList <- lapply(windEst[estimationSuccessful], '[[', 'covar')
             nonNullCovar = rep(F, n)
             nonNullCovar[estimationSuccessful] <- !unlist(lapply(covarList, is.null))
